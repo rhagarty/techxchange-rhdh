@@ -1,4 +1,4 @@
-# Hands-on Red Hat Deveoper Hub Lab
+# Hands-on Red Hat Developer Hub Lab
 
 In this lab, you will go through the process of creating, building, and deploying a sample application using the services provided by the Red Hat Developer Hub.  This process will include:
 
