@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-rhdh
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: rhdh
+      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+    backend:
+      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      cors: 
+        origin: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      auth:
+        keys:
+          - secret: ${BACKEND_SECRET}
+    integrations:
+      github:
+        - host: github.com
+          token: ${RHDH_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN}
+          apps:
+            - appId: ${RHDH_GITHUB_INTEGRATION_APP_ID}
+              clientId: ${RHDH_GITHUB_INTEGRATION_APP_CLIENT_ID}
+              clientSecret: ${RHDH_GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+              webhookUrl: none
+              webhookSecret: none
+              privateKey: ${RHDH_GITHUB_INTEGRATION_APP_PRIVATE_KEY}
+    catalog:
+      providers:
+        keycloakOrg:
+          production:
+            baseUrl: https://keycloak-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com
+            loginRealm: RHDH # ${KEYCLOAK_REALM}
+            realm: RHDH # ${KEYCLOAK_REALM}
+            clientId: ${KEYCLOAK_CLIENTID}
+            clientSecret: ${KEYCLOAK_CLIENTSECRET}
+            # highlight-add-start
+            schedule: # optional; same options as in TaskScheduleDefinition
+              # supports cron, ISO duration, "human duration" as used in code
+              frequency: { minutes: 1 }
+              # supports ISO duration, "human duration" as used in code
+              timeout: { minutes: 3 }
+              initialDelay: { seconds: 15 }
+              # highlight-add-end
+    kubernetes:
+      clusterLocatorMethods:
+        - clusters:
+            - authProvider: serviceAccount
+              name: rhdh-sa
+              serviceAccountToken: 
+              skipTLSVerify: true
+              url: https://api.66acf0a1cb466e001e539727.ocp.techzone.ibm.com:6443
+          type: config
+      serviceLocatorMethod:
+        type: multiTenant
+    argocd:
+      appLocatorMethods:
+        - type: 'config'
+          instances:
+            - name: argocd
+              url: https://argocd-server-XXXXX.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com
+              username: admin 
+              password: FszfiLl2P7yGKudbcgZOoMDBJTn40SR1
+    auth:
+      environment: production
+      session:
+        secret: ${BACKEND_SECRET}
+      providers:
+        oidc:
+          production:
+            clientId: ${KEYCLOAK_CLIENTID}
+            clientSecret: ${KEYCLOAK_CLIENTSECRET}
+            metadataUrl: https://keycloak-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/realms/RHDH/.well-known/openid-configuration
+            prompt: auto
+            signIn:
+              resolvers:
+                - resolver: preferredUsernameMatchingUserEntityName
+    signInPage: oidc
+binaryData: {}
