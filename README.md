@@ -17,21 +17,21 @@ In this lab, you will go through the process of creating, building, and deployin
     - [Login to the OpenShift console, using the following URL:](#login-to-the-openshift-console-using-the-following-url)
     - [Install Red Hat Marketplace Operators](#install-red-hat-marketplace-operators)
     - [Create your own project](#create-your-own-project)
-    - [Create Developer Hub instance](#create-developer-hub-instance)
+  - [2. Create Developer Hub instance](#2-create-developer-hub-instance)
     - [Create the config map for our Developer Hub instance](#create-the-config-map-for-our-developer-hub-instance)
     - [Create secret for backend](#create-secret-for-backend)
-    - [Add GitHub integration](#add-github-integration)
+  - [3. Add GitHub integration](#3-add-github-integration)
     - [Create secrets for GitHub integration](#create-secrets-for-github-integration)
-    - [Create Keycloak using Operator](#create-keycloak-using-operator)
-    - [Create Service Account](#create-service-account)
+  - [4. Create Keycloak instance using Operator](#4-create-keycloak-instance-using-operator)
+  - [5. Create Service Account](#5-create-service-account)
     - [Assign Role Binding to our Service Account](#assign-role-binding-to-our-service-account)
     - [Update config map with Service Account token](#update-config-map-with-service-account-token)
-    - [Create ArgoCD instance](#create-argocd-instance)
+  - [6. Create ArgoCD instance](#6-create-argocd-instance)
     - [Update config map with ArgoCD values](#update-config-map-with-argocd-values)
-    - [Create a dynamic plug-in config map](#create-a-dynamic-plug-in-config-map)
+  - [7. Create a dynamic plug-in config map](#7-create-a-dynamic-plug-in-config-map)
     - [Red Hat Developer Hub Operator](#red-hat-developer-hub-operator)
     - [Open Backstage Developer Hub](#open-backstage-developer-hub)
-    - [Navigate through Backstage UI](#navigate-through-backstage-ui)
+  - [8. Navigate through Backstage UI](#8-navigate-through-backstage-ui)
     - [END OF NEW INSTRUCTS, START OF OLD](#end-of-new-instructs-start-of-old)
     - [Add the RHDH helm chart to your cluster](#add-the-rhdh-helm-chart-to-your-cluster)
   - [2. Create Helm release](#2-create-helm-release)
@@ -81,7 +81,7 @@ To verify these operators are installed:
 
 >**NOTE**: Ensure your project is selected when completing the remaining steps in this lab.  
 
-### Create Developer Hub instance
+## 2. Create Developer Hub instance
 
 From the Developer view:
 - Go to `+Add` and select `Operator Backed` from the `Developer Catalog` section.
@@ -110,7 +110,7 @@ From the Developer view:
 - Enter `app-config-rhdh` for the config map name.
 - Select the `YAML view` radio button.
 
-Copy and paste the contents of the file `app-config-rhdh.yaml` into the YAML editor.
+Copy and paste the contents of the file [app-config-rhdh.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/app-config-rhdh.yaml) into the YAML editor.
 
 Click `Create` to save the config file.
 
@@ -133,7 +133,7 @@ Click `Create` to add the secret.
 
 Note that `BACKEND_SECRET` is referenced in the config map.
 
-### Add GitHub integration
+## 3. Add GitHub integration
 
 For this you will need a public GitHub account.
 
@@ -183,7 +183,7 @@ Use the `+ Add key/value` to add another secret. Repeat this action to add the f
 - Set `Key` to `RDHD_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key
 - Set `Key` to `RDHD_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN` and `Value` to the Personal Access Token
   
-### Create Keycloak using Operator
+## 4. Create Keycloak instance using Operator
 
 To perform this step, you will need to be in the Administrative view.
 
@@ -193,13 +193,33 @@ From the `Keycloak Operator` panel, select the tab.
 
 Click on `Create Keycloak` to bring up the form.
 
+Apply the keycloak.yaml file.
+
+Use the terminal window in your OCP console to enter the following commands.
+
+
+Wait for the operator to become ready and get the route to keycloak:
+
+```bash
+oc get route $(oc get routes -n demo-project -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep demo-keycloak-instance) \
+  -n demo-project \
+  -o template --template='{{.spec.host}}'\ 
+  ; echo
+```
+
+Get the admin secret:
+
+```bash
+oc get secret demo-keycloak-instance-initial-admin -n demo-project -o template --template='{{.data.password}}' | base64 -d ; echo
+```
+
 <TODO> Need steps to import config and get TLS secrets
 
 - KEYCLOAK_REALM
 - KEYCLOAK_CLIENTID
 - KEYCLOAK_CLIENTSECRET
 
-### Create Service Account
+## 5. Create Service Account
 
 To perform this step, you will need to be in the Administrative view.
 
@@ -251,7 +271,7 @@ From the details panel, click on `Reveal values` to view the token.
 Copy the token and paste it into the config map, under:
 `kubernetes` -> `clusterLocatorMethods` -> `serviceAccountToken`
 
-### Create ArgoCD instance
+## 6. Create ArgoCD instance
 
 From the Admistrator view, click on `Installed Operators` and then click on the `Red Hat Openshift GitOps` operator.
 
@@ -289,9 +309,9 @@ In the config map, navigate down to the `argocd` section.
 
 Update the `url` and `password`, replacing with route URL and admin password obtained in the last step.
 
-### Create a dynamic plug-in config map
+## 7. Create a dynamic plug-in config map
 
-<<TODO>> This may be improved - waiting on fixes from Erica
+<TODO This may be improved - waiting on fixes from Erica>
 
 `dynamic-plugins-rhdh`
 
@@ -312,7 +332,7 @@ Click on `backstage-developer-hub` Location URL
 Sign in
 username/pwd will be what we set in keycloak
 
-### Navigate through Backstage UI
+## 8. Navigate through Backstage UI
 
 Create template for Liberty Getting Started app
 Enter template URL - https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template/template.yaml

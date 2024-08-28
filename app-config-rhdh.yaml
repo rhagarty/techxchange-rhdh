@@ -47,7 +47,7 @@ data:
         - clusters:
             - authProvider: serviceAccount
               name: rhdh-sa
-              serviceAccountToken: 
+              serviceAccountToken: ${SA_TOKEN}
               skipTLSVerify: true
               url: https://api.66acf0a1cb466e001e539727.ocp.techzone.ibm.com:6443
           type: config
@@ -58,9 +58,9 @@ data:
         - type: 'config'
           instances:
             - name: argocd
-              url: https://argocd-server-XXXXX.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com
+              url: ${ARGOCD_URL}
               username: admin 
-              password: FszfiLl2P7yGKudbcgZOoMDBJTn40SR1
+              password: ${ARGOCD_PASS}
     auth:
       environment: production
       session:
