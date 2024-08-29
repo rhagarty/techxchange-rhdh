@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dynamic-plugins-dg
+  name: dynamic-plugins-rhdh
 data:
   dynamic-plugins.yaml: |
     includes:

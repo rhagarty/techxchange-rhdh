@@ -6,11 +6,11 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: rhdh
-      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      baseUrl: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
     backend:
-      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      baseUrl: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
       cors: 
-        origin: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+        origin: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
@@ -29,11 +29,11 @@ data:
       providers:
         keycloakOrg:
           production:
-            baseUrl: https://keycloak-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com
-            loginRealm: RHDH # ${KEYCLOAK_REALM}
-            realm: RHDH # ${KEYCLOAK_REALM}
-            clientId: ${KEYCLOAK_CLIENTID}
-            clientSecret: ${KEYCLOAK_CLIENTSECRET}
+            baseUrl: https://demo-keycloak-instance.apps.ocp.ibm.edu
+            loginRealm: rhdh # ${KEYCLOAK_REALM}
+            realm: rhdh # ${KEYCLOAK_REALM}
+            clientId: rhdh-client
+            clientSecret: 7iKyQUwyApIojzOlSj82vUWIhejv41E5
             # highlight-add-start
             schedule: # optional; same options as in TaskScheduleDefinition
               # supports cron, ISO duration, "human duration" as used in code
@@ -49,7 +49,7 @@ data:
               name: rhdh-sa
               serviceAccountToken: ${SA_TOKEN}
               skipTLSVerify: true
-              url: https://api.66acf0a1cb466e001e539727.ocp.techzone.ibm.com:6443
+              url: https://api.ocp.ibm.edu:6443
           type: config
       serviceLocatorMethod:
         type: multiTenant
@@ -68,9 +68,9 @@ data:
       providers:
         oidc:
           production:
-            clientId: ${KEYCLOAK_CLIENTID}
-            clientSecret: ${KEYCLOAK_CLIENTSECRET}
-            metadataUrl: https://keycloak-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/realms/RHDH/.well-known/openid-configuration
+            clientId: rhdh-client
+            clientSecret: 7iKyQUwyApIojzOlSj82vUWIhejv41E5
+            metadataUrl: https://demo-keycloak-instance.apps.ocp.ibm.edu/realms/rhdh/.well-known/openid-configuration
             prompt: auto
             signIn:
               resolvers:
