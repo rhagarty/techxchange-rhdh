@@ -6,11 +6,11 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: rhdh
-      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      baseUrl: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
     backend:
-      baseUrl: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+      baseUrl: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
       cors: 
-        origin: https://backstage-developer-hub-dg-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/
+        origin: https://backstage-developer-hub-default.apps.ocp.ibm.edu/
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
@@ -49,7 +49,7 @@ data:
               name: rhdh-sa
               serviceAccountToken: ${SA_TOKEN}
               skipTLSVerify: true
-              url: https://api.66acf0a1cb466e001e539727.ocp.techzone.ibm.com:6443
+              url: https://api.ocp.ibm.edu:6443
           type: config
       serviceLocatorMethod:
         type: multiTenant
