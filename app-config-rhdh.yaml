@@ -68,9 +68,9 @@ data:
       providers:
         oidc:
           production:
-            clientId: ${KEYCLOAK_CLIENTID}
-            clientSecret: ${KEYCLOAK_CLIENTSECRET}
-            metadataUrl: https://keycloak-dg-dev.apps.66acf0a1cb466e001e539727.ocp.techzone.ibm.com/realms/RHDH/.well-known/openid-configuration
+            clientId: rhdh-client
+            clientSecret: 7iKyQUwyApIojzOlSj82vUWIhejv41E5
+            metadataUrl: https://demo-keycloak-instance.apps.ocp.ibm.edu/realms/rhdh/.well-known/openid-configuration
             prompt: auto
             signIn:
               resolvers:
