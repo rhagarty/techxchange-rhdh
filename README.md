@@ -16,16 +16,16 @@ In this lab, you will go through the process of creating, building, and deployin
   - [1. Initial OCP setup](#1-initial-ocp-setup)
     - [Login to the OpenShift console, using the following URL:](#login-to-the-openshift-console-using-the-following-url)
     - [Install Red Hat Marketplace Operators](#install-red-hat-marketplace-operators)
-    - [Create your own project](#create-your-own-project)
+    - [Use default project](#use-default-project)
   - [2. Create Developer Hub instance](#2-create-developer-hub-instance)
-    - [Create the config map for our Developer Hub instance](#create-the-config-map-for-our-developer-hub-instance)
-    - [Create secret for backend](#create-secret-for-backend)
+    - [Apply the config map for our Developer Hub instance](#apply-the-config-map-for-our-developer-hub-instance)
+    - [Create secret for the backend Developer Hub](#create-secret-for-the-backend-developer-hub)
   - [3. Add GitHub integration](#3-add-github-integration)
     - [Create secrets for GitHub integration](#create-secrets-for-github-integration)
-  - [4. Create Keycloak instance using Operator](#4-create-keycloak-instance-using-operator)
+  - [4. Create Keycloak resources](#4-create-keycloak-resources)
   - [5. Create Service Account](#5-create-service-account)
     - [Assign Role Binding to our Service Account](#assign-role-binding-to-our-service-account)
-    - [Update config map with Service Account token](#update-config-map-with-service-account-token)
+    - [Update Secrets with Service Account token](#update-secrets-with-service-account-token)
   - [6. Create ArgoCD instance](#6-create-argocd-instance)
     - [Update config map with ArgoCD values](#update-config-map-with-argocd-values)
   - [7. Create a dynamic plug-in config map](#7-create-a-dynamic-plug-in-config-map)
@@ -68,23 +68,19 @@ To verify these operators are installed:
 - Open up the `Operators` menu item, and select `Installed Operators`.
 - Ensure the `Project` filter at the top of the list is set to `All Projects`.
 
-### Create your own project
+### Use default project
 
-- Switch from the Administrator view to the Developer view
-- Click on `Project`
-- Click the drop down icon next to the currently displayed project.
+For convenience, we will be using the `default` project/namespace for this lab. This allows service routes to be hard coded in YAML files that you will be asked to apply. This should make editing of the files easier, or not required, which limits the chance for typos or missed changes.  
 
-![create-project](images/create-project.png)
-
-- Click the `Create Project` button.
-- Enter a unique name for your project (e.g. myname-dev) and select `Create`.
-
->**NOTE**: Ensure your project is selected when completing the remaining steps in this lab.  
+>**IMPORTANT**: Ensure the `default` project is selected when completing the remaining steps in this lab.  
 
 ## 2. Create Developer Hub instance
 
 From the Developer view:
 - Go to `+Add` and select `Operator Backed` from the `Developer Catalog` section.
+
+![operator-backed](images/operator-backed.png)
+
 - From the list of options, select `Red Hat Developer Hub`.
 - Click the `Create` button.
 
@@ -102,23 +98,27 @@ Click the graph icon in the upper right to get a graphical view.
 
 ![developer-hub-instance-graph](images/developer-hub-instance-graph.png)
 
-### Create the config map for our Developer Hub instance
+### Apply the config map for our Developer Hub instance
 
-From the Developer view:
-- Click on the `ConfigMaps` menu item.
-- Click on the `Create ConfigMap` button.
-- Enter `app-config-rhdh` for the config map name.
-- Select the `YAML view` radio button.
+Click the `Import YAML` button located at the top of the console.
+
+![apply-yaml](images/apply-yaml.png)
 
 Copy and paste the contents of the file [app-config-rhdh.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/app-config-rhdh.yaml) into the YAML editor.
 
+>**NOTE**: Use `CTRL-v` to paste.
+
 Click `Create` to save the config file.
+
+This will create a `Config Map` named `app-config-rhdh`.
+
+![app-config-rhdh](images/app-config-rhdh.png)
 
 This version of the config map is filled with default values that will need to be update as we advance through the rest of the lab.
 
 The config map has a number of variable names that we will need to assign proper values to using `Secrets`. It also has URLs that will need to be modified as we create services and proper links are generated.
 
-### Create secret for backend
+### Create secret for the backend Developer Hub
 
 From the Developer view:
 - Click on the `Secrets` menu item.
@@ -149,9 +149,24 @@ From the new GitHub app form:
 - Leave `Callback URL` blank
 - **[IMPORTANT]** Turn off `WebHook - Active`
 
-For `Permissions`, set the values to match this screen shot:
+For `Repository Permissions`, set the values to match the following:
+- Actions: RW
+- Administration RW
+- Commit Statuses R
+- Contents: RW
+- Environments: RW
+- Issues: RW
+- Metadata: R
+- Packages: RW
+- Pull Requests: RW
+- Secrets: RW
+- Variables: RW
+- Workflows: RW
 
-<TODO> Add screen shot
+For `Organization permissions`, set the values to match the following:
+- Administration: RW
+- Members: R
+- Variables: RW
 
 Click `Create GitHub App` to save.
   
@@ -159,65 +174,52 @@ Once created, you will get generated data concerning your app. Some of these val
 
 - Application ID
 - Client ID
-- Client Secret
-- Private Key
+- Client Secret (click option to generate this)
+- Private Key (button to generate a key is at the bottom of the page)
 - Personal Access Token
 
-Use these values to complete the next step.
+**DO NOT CLOSE this tab**! You will need to copy/paste these values to complete the next step.
 
 ### Create secrets for GitHub integration
 
-From the Developer view:
+Go back to your OpenShift console, and from the Developer view:
 - Click on the `Secrets` menu item.
 - From the Secrets list, click on the `Create` drop-down menu on the right, and select `Key/value secret`.
 
 In the Key/value secret form, enter the following values:
 - Set `Secret name` to `rhdh-secrets-github-integration`
-- Set `Key` to `RDHD_GITHUB_INTEGRATION_APP_CLIENT_ID`
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_CLIENT_ID`
 - Set `Value` to the Client ID
 
 Use the `+ Add key/value` to add another secret. Repeat this action to add the following secrets:
 
-- Set `Key` to `RDHD_GITHUB_INTEGRATION_APP_CLIENT_SECRET` and `Value` to the Client Secret
-- Set `Key` to `RDHD_GITHUB_INTEGRATION_APP_ID` and `Value` to the Application ID
-- Set `Key` to `RDHD_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key
-- Set `Key` to `RDHD_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN` and `Value` to the Personal Access Token
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_CLIENT_SECRET` and `Value` to the Client Secret
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_ID` and `Value` to the Application ID
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN` and `Value` to the Personal Access Token
   
-## 4. Create Keycloak instance using Operator
+## 4. Create Keycloak resources
 
-To perform this step, you will need to be in the Administrative view.
+Apply the 3 Keycloak YAML files located in https://github.com/rhagarty/techxchange-rhdh/tree/main/keycloak.
 
-Navigate to `Operators`, then `Installed Operators`, and then click on the `Keycloak Operator`.
+Using the `Import YAML` button located at the top of the console, import the files in the following order:
 
-From the `Keycloak Operator` panel, select the tab.
+1. `keycloak-postgres.yaml` - creates a database for Keycloak to connect to.
 
-Click on `Create Keycloak` to bring up the form.
+Insure the pod is up and running before continuing.
 
-Apply the keycloak.yaml file.
+![postgres-pod](images/postgres-pod.png)
 
-Use the terminal window in your OCP console to enter the following commands.
+2. `keycloak-instance.yaml` - the OpenID Connect user management provider. 
+3. `keycloak-realm.yaml` - pre-configured Keycloak users and access.
 
+From the `Administrator` view, you should be able to see both Keycloak pods running:
 
-Wait for the operator to become ready and get the route to keycloak:
+![keycloak-pods](images/keycloak-pods.png)
 
-```bash
-oc get route $(oc get routes -n demo-project -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep demo-keycloak-instance) \
-  -n demo-project \
-  -o template --template='{{.spec.host}}'\ 
-  ; echo
-```
+Applying the YAML files will also create Keycloak secrets, which contain usernames and passwords. View them in the `Developer` view under `Secrets`:
 
-Get the admin secret:
-
-```bash
-oc get secret demo-keycloak-instance-initial-admin -n demo-project -o template --template='{{.data.password}}' | base64 -d ; echo
-```
-
-<TODO> Need steps to import config and get TLS secrets
-
-- KEYCLOAK_REALM
-- KEYCLOAK_CLIENTID
-- KEYCLOAK_CLIENTSECRET
+![keycloak-secrets](images/keycloak-secrets.png)
 
 ## 5. Create Service Account
 
@@ -246,14 +248,14 @@ In the `Create RoleBinding` form, set the following values:
 - `RoleBinding` name to `rhdh-sa-rb`
 - `Role name` select `cluster-admin` (see note)
 - `Subject` select `ServiceAccount`
-- `Subject namespace` select your project name
+- `Subject namespace` select `default`
 - `Subject name` to `rhdh-sa`
 
 >**NOTE:** Setting `Role name` to `cluster-admin` is not a best practice from a developers perspective. This would typically be set appropriately by an actual cluster administrator.
 
 Click `Create` to save the Role Binding.
 
-### Update config map with Service Account token
+### Update Secrets with Service Account token
 
 When you created your Service Account, an associated secret should have been auto-generated. To find the secret:
 
@@ -268,8 +270,15 @@ From the details panel, click on `Reveal values` to view the token.
 
 ![reveal-sa-token](images/reveal-sa-token.png)
 
-Copy the token and paste it into the config map, under:
-`kubernetes` -> `clusterLocatorMethods` -> `serviceAccountToken`
+Copy the token so that we can add it to an existing Secret.
+
+Return to the list of Secrets and edit the secret `secrets-rhdh`.
+
+Add a new `key/value` pair to the secret, and set:
+- key = `SA_TOKEN`
+- value = token
+
+`SA_TOKEN` is referenced in our `app-config` map.
 
 ## 6. Create ArgoCD instance
 
