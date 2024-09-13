@@ -18,4 +18,6 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-argocd
         disabled: false
+      - package: ./dynamic-plugins/dist/roadiehq-scaffolder-backend-argocd-dynamic
+        disabled: false
 binaryData: {}
