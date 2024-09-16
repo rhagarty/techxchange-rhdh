@@ -1,0 +1,14 @@
+spec:
+  application:
+    appConfig:
+      configMaps:
+        - name: app-config-rhdh
+      mountPath: /opt/app-root/src
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
+    extraEnvs:
+      envs:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
+      secrets:
+        - name: secrets-rhdh
+        - name: rhdh-secrets-github-integration
