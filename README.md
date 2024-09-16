@@ -31,7 +31,7 @@ In this lab, you will go through the process of creating, building, and deployin
   - [7. Create a dynamic plug-in config map](#7-create-a-dynamic-plug-in-config-map)
   - [8. Reconfigure the Red Hat Developer Hub Operator](#8-reconfigure-the-red-hat-developer-hub-operator)
   - [9. Open Backstage Developer Hub](#9-open-backstage-developer-hub)
-    - [Navigate through the Backstage UI](#navigate-through-the-backstage-ui)
+    - [Create Liberty App](#create-liberty-app)
 
 ## 1. Initial OCP setup
 
@@ -228,7 +228,7 @@ Use the `+ Add key/value` to add another secret. Repeat this action to add the f
 
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_CLIENT_SECRET` and `Value` to the Client Secret
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_ID` and `Value` to the Application ID
-- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key
+- Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key (downloaded .pem file)
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN` and `Value` to the Personal Access Token
 
 ![github-integration-secrets](images/github-integration-secrets.png)
@@ -363,6 +363,8 @@ Update the `url` and `password` values, using the route URL and admin password o
 
 ![argocd-config-map](images/argocd-config-map.png)
 
+>**NOTE**: Do not include a trailing `/` at the end of the `url`.
+
 ## 7. Create a dynamic plug-in config map
 
 Click the `Import YAML` button located at the top of the console.
@@ -419,16 +421,46 @@ Sign into `Red Hat Developer Hub` backstage OIDC page by clicking `Sign In`.
 
 The username and password have already been set when we configured KeyCloak.
 
-### Navigate through the Backstage UI
+- Username: user1
+- Password: rhdh
 
-Create template for Liberty Getting Started app
-Enter template URL - https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template/template.yaml
+![backstage-home-page](images/backstage-home-page.png)
 
-Click `Analyze`
+### Create Liberty App
 
-Follow steps in template
+From the main menu, click on `Create...`.
 
-Run through pipeline
+![backstage-create-app](images/backstage-create-app.png)
 
-Click `Catalog` to see it was added
+Click `Register Existing Component` to add our Open liberty template.
+
+![backstage-add-template](images/backstage-add-template.png)
+
+For `Select URL`, enter the Open Liberty "getting started" app template URL:
+https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template/template.yaml
+
+Click `Analyze`.
+
+Once complete, click `Import` to add the components to the Backstage catalog.
+
+Click `Create...` again to see the newly added template.
+
+![backstage-template-list](images/backstage-template-list.png)
+
+From the `Open Liberty Starter App` panel, click the `Choose` button.
+
+Enter any blank required fields and press `Next` to continue through to fields.
+- Repo Owner: Your GitHub account username
+- Namespace: default
+- Application Id: liberty-app-1 (or something unique)
+- Select a CI method: GitHub Actions
+
+![backstage-review](images/backstage-review.png)
+
+From the `Review` page, click `Create`.
+
+Verify that it passes all of the steps in the pipeline. Note that if you `Start Over`, you will need to provide a unique `Application Id` value.
+
+Click `Catalog` to see it was added.
+
 Click on it to see deployment info (hopefully will include Liberty tab)
