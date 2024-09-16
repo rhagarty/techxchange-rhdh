@@ -183,6 +183,12 @@ You will also need to generate a client secret and a private key. On this panel,
 
 ![generate-private-key](images/generate-private-key.png)
 
+When generating your private key, you will be asked to authenticate your GitHub account. When successfully authenticated, a `.pem` file will be downloaded to the `Downloads` directory on your system. From a terminal window, use the `cat` command to display the file so that you can copy/paste the contents in the next step.
+
+![pem-file-contents](images/pem-file-contents.png)
+
+When you copy/paste, include everthing, including the `BEGIN RSA` and `END RSA` lines.
+
 **DO NOT CLOSE this tab**! You will need to copy/paste these values to complete the next step.
 
 You will also need to generate a personal access token. Open another tab to your GitHub account and click on your picture. 
