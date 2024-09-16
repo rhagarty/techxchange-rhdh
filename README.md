@@ -29,9 +29,9 @@ In this lab, you will go through the process of creating, building, and deployin
   - [6. Create ArgoCD instance](#6-create-argocd-instance)
     - [Update config map with ArgoCD values](#update-config-map-with-argocd-values)
   - [7. Create a dynamic plug-in config map](#7-create-a-dynamic-plug-in-config-map)
-    - [Red Hat Developer Hub Operator](#red-hat-developer-hub-operator)
-    - [Open Backstage Developer Hub](#open-backstage-developer-hub)
-  - [8. Navigate through Backstage UI](#8-navigate-through-backstage-ui)
+  - [8. Reconfigure the Red Hat Developer Hub Operator](#8-reconfigure-the-red-hat-developer-hub-operator)
+  - [9. Open Backstage Developer Hub](#9-open-backstage-developer-hub)
+    - [Navigate through the Backstage UI](#navigate-through-the-backstage-ui)
 
 ## 1. Initial OCP setup
 
@@ -73,19 +73,23 @@ From the Developer view:
 ![operator-backed](images/operator-backed.png)
 
 - From the list of options, select `Red Hat Developer Hub`.
-- Click the `Create` button.
 
 ![rhdh-create-button](images/rhdh-create-button.png)
 
-For now, leave all the fields with their default values and click `Create`.
+- Click the `Create` button.
+- This will bring up the `Create Backstage` panel.
 
-Please be patient, as this may take several minutes to complete.
+![rhdh-create-panel](images/rhdh-create-panel.png)
 
-Once instantiated, you will be able to view the instance by clicking the `Topology` view.
+- For now, leave all the fields with their default values and click `Create`.
+
+  Please be patient, as this may take several minutes to complete.
+
+- Once instantiated, you will be able to view the instance by clicking the `Topology` view.
 
 ![developer-hub-instance-list](images/developer-hub-instance-list.png)
 
-Click the graph icon in the upper right to get a graphical view.
+- Click the graph icon in the upper right to get a graphical view.
 
 ![developer-hub-instance-graph](images/developer-hub-instance-graph.png)
 
@@ -124,6 +128,8 @@ Click `Create` to add the secret.
 
 Note that `BACKEND_SECRET` is referenced in the config map.
 
+![secrets-rhdh](images/secrets-rhdh.png)
+
 ## 3. Add GitHub integration
 
 For this you will need a public GitHub account.
@@ -140,6 +146,8 @@ From the new GitHub app form:
 - Enter any valid URL for the homepage - this value will not be used anywhere
 - Leave `Callback URL` blank
 - **[IMPORTANT]** Turn off `WebHook - Active`
+
+![github-app-create-panel](images/github-app-create-panel.png)
 
 For `Repository Permissions`, set the values to match the following:
 - Actions: RW
@@ -167,7 +175,9 @@ Once created, you will get generated data concerning your app. Some of these val
 - Application ID
 - Client ID
 
-You will also need to generate a client secret and a private key. On this panel, click the associated button to generate them.
+![github-app-panel](images/github-app-panel.png)
+
+You will also need to generate a client secret and a private key. On this panel, click the associated button to generate both of these keys.
 
 ![generate-client-secret](images/generate-client-secret.png)
 
@@ -214,10 +224,12 @@ Use the `+ Add key/value` to add another secret. Repeat this action to add the f
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_ID` and `Value` to the Application ID
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_APP_PRIVATE_KEY` and `Value` to the Private Key
 - Set `Key` to `RHDH_GITHUB_INTEGRATION_PERSONAL_ACCESS_TOKEN` and `Value` to the Personal Access Token
-  
+
+![github-integration-secrets](images/github-integration-secrets.png)
+
 ## 4. Create Keycloak resources
 
-Apply the 3 Keycloak YAML files located in https://github.com/rhagarty/techxchange-rhdh/tree/main/keycloak.
+Apply the 3 Keycloak YAML files located in the [keycloak](https://github.com/rhagarty/techxchange-rhdh/tree/main/keycloak) directory.
 
 Using the `Import YAML` button located at the top of the console, import the files in the following order:
 
@@ -250,6 +262,8 @@ In the YAML editor, change the `name` value to `rhdh-sa`.
 
 Click `Create` to save the Service Account.
 
+![service-account](images/service-account.png)
+
 >**NOTE**: The creation of the Service Account will automatically generate an associated secret, which will be needed in a later step.
 
 ### Assign Role Binding to our Service Account
@@ -272,6 +286,8 @@ In the `Create RoleBinding` form, set the following values:
 
 Click `Create` to save the Role Binding.
 
+![role-binding](images/role-binding.png)
+
 ### Update Secrets with Service Account token
 
 When you created your Service Account, an associated secret should have been auto-generated. To find the secret:
@@ -291,6 +307,8 @@ Copy the token so that we can add it to an existing Secret.
 
 Return to the list of Secrets and edit the secret `secrets-rhdh`.
 
+Under the `Actions` drop-down menu, click `Edit Secret`.
+
 Add a new `key/value` pair to the secret, and set:
 - key = `SA_TOKEN`
 - value = token
@@ -301,11 +319,9 @@ Add a new `key/value` pair to the secret, and set:
 
 From the Admistrator view, click on `Installed Operators` and then click on the `Red Hat Openshift GitOps` operator.
 
-Click on the `ArgoCD` tab.
+Click on the `ArgoCD` tab, then click the `Create ArgoCD` button.
 
-![argocd-option](images/argocd-option.png)
-
-Click on the `Create ArgoCD` button.
+![argocd-create](images/argocd-create.png)
 
 Accept all the default values and click `Create` to save. This will create an ArgoCD instance with the name `argocd`.
 
@@ -327,43 +343,85 @@ To get the `admin` password to log into the ArgoCD UI, navigate to the Developer
 
 Click on it to show details. The admin password is located at the bottom of the panel
 
+Set `Username` to `admin`, and enter the password to login to Argo.
+
+![argocd-home-page](images/argocd-home-page.png)
+
 Remember the ArgoCD route and admin password, as they will be needed in the next step.
 
 ### Update config map with ArgoCD values
 
-In the config map, navigate down to the `argocd` section.
+Edit the `app-config-rhdh` config map, and navigate down to the `argocd` section.
 
-Update the `url` and `password`, replacing with route URL and admin password obtained in the last step.
+Update the `url` and `password` values, using the route URL and admin password obtained in the last step. Remember to save your changes.
+
+![argocd-config-map](images/argocd-config-map.png)
 
 ## 7. Create a dynamic plug-in config map
 
-<TODO This may be improved - waiting on fixes from Erica>
+Click the `Import YAML` button located at the top of the console.
 
-`dynamic-plugins-rhdh`
+![apply-yaml](images/apply-yaml.png)
 
-This enables the backstage plug-ins
-May be replaced by Liberty plug-in features
+Copy and paste the contents of the file [dynamic-plugins-rhdh.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/dynamic-plugins-rhdh.yaml) into the YAML editor.
 
-### Red Hat Developer Hub Operator
+This will create a `Config Map` named `dynamic-plugins-rhdh`.
 
-`developer-hub-rhdh`
-Update YAML to point to config maps (app config and dynamic) and ArgoCD
-Also add secrets
+![dynamic-plugins-rhdh](images/dynamic-plugins-rhdh.png)
 
-### Open Backstage Developer Hub
+This enables all of the Backstage plug-ins.
 
-Administrator view
-`Networking` -> `Routes`
-Click on `backstage-developer-hub` Location URL
-Sign in
-username/pwd will be what we set in keycloak
+## 8. Reconfigure the Red Hat Developer Hub Operator
 
-## 8. Navigate through Backstage UI
+From the Administrator view, go to the `Installed Operators` list and click on `Red Hat Developer Hub Operator`.
+
+From the operator panel, click on the `Red Hat Developer Hub` tab.
+
+Click `Edit backstage` using the drop-down menu for the `developer-hub` instance. 
+
+![rhdh-operator-backstage-list](images/rhdh-operator-backstage-list.png)
+
+Replace the `spec` section with the contents of the [developer-hub.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/developer-hub.yaml) file.
+
+![developer-hub-yaml-changes](images/developer-hub-yaml-changes.png)
+
+Save your changes.
+
+This change will result in the restarting of the `backstage-developer-hub` pod (shown as in the `Init` stage).
+
+![backstage-pod-list](images/backstage-pod-list.png)
+
+This restart process may take 5-10 minutes. You can click on the pod and then click the `Logs` tab to see the progress.
+
+![backstage-pod-logs](images/backstage-pod-logs.png)
+
+When complete, the status will be set to `Running`.
+
+![keycloak-user-added](images/keycloak-user-added.png)
+
+## 9. Open Backstage Developer Hub
+
+From the Administrator view, click on `Networking`, and then `Routes`.
+
+Click on the `backstage-developer-hub` route URL.
+
+![backstarge-route](images/backstage-route.png)
+
+Sign into `Red Hat Developer Hub` backstage OIDC page by clicking `Sign In`. 
+
+![rhdh-sign-in](images/rhdh-sign-in.png)
+
+The username and password have already been set when we configured KeyCloak.
+
+### Navigate through the Backstage UI
 
 Create template for Liberty Getting Started app
 Enter template URL - https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template/template.yaml
+
 Click `Analyze`
+
 Follow steps in template
+
 Run through pipeline
 
 Click `Catalog` to see it was added
