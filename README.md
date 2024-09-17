@@ -436,12 +436,12 @@ Click `Register Existing Component` to add our Open liberty template.
 
 ![backstage-add-template](images/backstage-add-template.png)
 
-For `Select URL`, enter the Open Liberty "getting started" app template URL:
+For `Select URL`, enter the Open Liberty "Getting Started" app template URL:
 https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template/template.yaml
 
 Click `Analyze`.
 
-Once complete, click `Import` to add the components to the Backstage catalog.
+Once complete, click `Import` to start the process of adding the components to the Backstage catalog.
 
 Click `Create...` again to see the newly added template.
 
@@ -449,18 +449,25 @@ Click `Create...` again to see the newly added template.
 
 From the `Open Liberty Starter App` panel, click the `Choose` button.
 
-Enter any blank required fields and press `Next` to continue through to fields.
+Enter any blank required fields and press `Next` to continue through field options.
 - Repo Owner: Your GitHub account username
 - Namespace: default
-- Application Id: liberty-app-1 (or something unique)
+- Application Id: liberty-app-1 (must be unique)
 - Select a CI method: GitHub Actions
 
 ![backstage-review](images/backstage-review.png)
 
 From the `Review` page, click `Create`.
 
-Verify that it passes all of the steps in the pipeline. Note that if you `Start Over`, you will need to provide a unique `Application Id` value.
+Verify that it passes all of the steps in the pipeline. Note that if you `Start Over`, you will need to provide a new unique `Application Id` value.
+
+![backstage-verified](images/backstage-verified.png)
 
 Click `Catalog` to see it was added.
 
-Click on it to see deployment info (hopefully will include Liberty tab)
+![backstage-catalog-list](images/backstage-catalog-list.png)
+
+Click on the service to get more details.
+
+![backstage-service-details](images/backstage-service-details.png)
+
