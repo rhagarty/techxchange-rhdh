@@ -32,6 +32,9 @@ In this lab, you will go through the process of creating, building, and deployin
   - [8. Reconfigure the Red Hat Developer Hub Operator](#8-reconfigure-the-red-hat-developer-hub-operator)
   - [9. Open Backstage Developer Hub](#9-open-backstage-developer-hub)
     - [Create Liberty App](#create-liberty-app)
+    - [Access the application](#access-the-application)
+    - [View GitHub actions](#view-github-actions)
+    - [Modify the application](#modify-the-application)
 
 ## 1. Initial OCP setup
 
@@ -470,4 +473,88 @@ Click `Catalog` to see it was added.
 Click on the service to get more details.
 
 ![backstage-service-details](images/backstage-service-details.png)
+
+Click on the `Kubernetes` tab to see deployment details:
+
+![backstage-kubernetes](images/backstage-kubernetes.png)
+
+Click on the `Docs` tab to see the GitHub repo README file:
+
+![backstage-docs](images/backstage-docs.png)
+
+### Access the application
+
+>**NOTE**: This may change if the Liberty plug-in is available.
+
+Click on the `Deployment` link to return back to the OpenShift console.
+
+![backstage-deployment-link](images/backstage-deployment-link.png)
+
+This will show deployment details about the app.
+
+![backstage-deployment-details](images/backstage-deployment-details.png)
+
+Click on the `Topology` menu item and locate the application node.
+
+![backstage-topology-view](images/backstage-topology-view.png)
+
+Click on the `Open URL` icon to access the application.
+
+![backstage-view-app](images/backstage-view-app.png)
+
+### View GitHub actions
+
+Click on the `View Source` link to open up a new browser tab to your GitHub repo:
+
+![backstage-view-source](images/backstage-view-source.png)
+
+From the GitHub repo panel, click the `Actions` tab to display the workflow runs.
+
+![github-initial-commit](images/github-initial-commit.png)
+
+Click on `initial commit` to get details on the initial deployment.
+
+![github-work-flows](images/github-work-flows.png)
+
+Click on the `build-and-push-image` button to see each step in the build pipeline. Each step can be expanded to show logs.
+
+![github-job-output](images/github-job-output.png)
+
+Click on the `Code` tab, and then click on the package application link.
+
+![github-packages-link](images/github-packages-link.png)
+
+This display the details on the image created for the application.
+
+![github-packages](images/github-packages.png)
+
+### Modify the application
+
+To change the home page of the application, navigate to `src/main/webapp/index.html'. In edit mode, modify the string in the header, and then commit the change. 
+
+>Note: Commit directly to the main branch.
+
+![github-code-change](images/github-code-change.png)
+
+Once you commit the change, a new workflow will be triggered. You can view it by clicking the `Actions` tab.
+
+![github-new-action](images/github-new-action.png)
+
+In order to see the change in the application, we will need to restart the pod in OpenShift. From the Red Hat Developer Hub Backstage console, click the `Deployment` link to return back to the OpenShift console.
+
+![backstage-deployment-link](images/backstage-deployment-link.png)
+
+Using the up and down arrows, stop the pod by clicking the down arrow.
+
+![restart-pod](images/restart-pod.png)
+
+After stopping the pod, it will automatically restart.
+
+Click on the `Topology` menu item and locate the application node.
+
+![backstage-topology-view](images/backstage-topology-view.png)
+
+Click on the `Open URL` icon to access the application and see the updated header string.
+
+![backstage-view-app-2](images/backstage-view-app-2.png)
 
