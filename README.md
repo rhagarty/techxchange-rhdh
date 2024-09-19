@@ -29,8 +29,8 @@ In this lab, you will go through the process of creating, building, and deployin
   - [6. Create ArgoCD instance](#6-create-argocd-instance)
     - [Update config map with ArgoCD values](#update-config-map-with-argocd-values)
   - [7. Create a dynamic plug-in config map](#7-create-a-dynamic-plug-in-config-map)
-  - [8. Reconfigure the Red Hat Developer Hub Operator](#8-reconfigure-the-red-hat-developer-hub-operator)
-  - [9. Open Backstage Developer Hub](#9-open-backstage-developer-hub)
+  - [8. Reconfigure Red Hat Developer Hub](#8-reconfigure-red-hat-developer-hub)
+  - [9. Open Red Hat Developer Hub instance](#9-open-red-hat-developer-hub-instance)
     - [Create Liberty App](#create-liberty-app)
     - [Access the application](#access-the-application)
     - [View GitHub actions](#view-github-actions)
@@ -70,6 +70,8 @@ For convenience, we will be using the `default` project/namespace for this lab. 
 
 ## 2. Create Developer Hub instance
 
+To enable use of Red Hat Developer Hub in our Openshift cluster, we need to create a Developer Hub instance.
+
 From the Developer view:
 - Go to `+Add` and select `Operator Backed` from the `Developer Catalog` section.
 
@@ -81,6 +83,8 @@ From the Developer view:
 
 - Click the `Create` button.
 - This will bring up the `Create Backstage` panel.
+
+>**NOTE**: Backstage is an open-source framework for building developer portals, and it serves as the foundation that Red Hat Developer Hub is built on.
 
 ![rhdh-create-panel](images/rhdh-create-panel.png)
 
@@ -134,6 +138,8 @@ Note that `BACKEND_SECRET` is referenced in the config map.
 ![secrets-rhdh](images/secrets-rhdh.png)
 
 ## 3. Add GitHub integration
+
+To allow Red Hat Developer Hub to create GitHub repositories, we need to configure some set up.
 
 For this you will need a public GitHub account.
 
@@ -238,6 +244,8 @@ Use the `+ Add key/value` to add another secret. Repeat this action to add the f
 
 ## 4. Create Keycloak resources
 
+We will be using Keycloak to enable proper authentication and authorization for Red Hat Developer Hub. In this step will set up Keycloak and create the needed Keycloak resources.
+
 Apply the 3 Keycloak YAML files located in the [keycloak](https://github.com/rhagarty/techxchange-rhdh/tree/main/keycloak) directory.
 
 Using the `Import YAML` button located at the top of the console, import the files in the following order:
@@ -260,6 +268,8 @@ Applying the YAML files will also create Keycloak secrets, which contain usernam
 ![keycloak-secrets](images/keycloak-secrets.png)
 
 ## 5. Create Service Account
+
+To further enable security and allow access to Kubernetes resources, we need to create users and roles using RBAC. This will involve creating a Service Account and assigning it a role binding.
 
 To perform this step, you will need to be in the Administrative view.
 
@@ -326,6 +336,8 @@ Add a new `key/value` pair to the secret, and set:
 
 ## 6. Create ArgoCD instance
 
+In order to utilize ArgoCD in our CI/CD pipeline, we need to create an ArgoCD instance.
+
 From the Admistrator view, click on `Installed Operators` and then click on the `Red Hat Openshift GitOps` operator.
 
 Click on the `ArgoCD` tab, then click the `Create ArgoCD` button.
@@ -370,6 +382,8 @@ Update the `url` and `password` values, using the route URL and admin password o
 
 ## 7. Create a dynamic plug-in config map
 
+In order to enable use of the integrated plugins for Red Hat Developer Hub, including the Liberty plugin, we need to create a dynamic plug-in config map.
+
 Click the `Import YAML` button located at the top of the console.
 
 ![apply-yaml](images/apply-yaml.png)
@@ -380,9 +394,11 @@ This will create a `Config Map` named `dynamic-plugins-rhdh`.
 
 ![dynamic-plugins-rhdh](images/dynamic-plugins-rhdh.png)
 
-This enables all of the Backstage plug-ins.
+This enables all of the Red Hat Developer Hub plug-ins.
 
-## 8. Reconfigure the Red Hat Developer Hub Operator
+## 8. Reconfigure Red Hat Developer Hub
+
+To be able to utilize the changes we've made, we'll need to reconfigure the Red Hat Developer Hub instance.
 
 From the Administrator view, go to the `Installed Operators` list and click on `Red Hat Developer Hub Operator`.
 
@@ -410,13 +426,15 @@ When complete, the status will be set to `Running`.
 
 ![keycloak-user-added](images/keycloak-user-added.png)
 
-## 9. Open Backstage Developer Hub
+## 9. Open Red Hat Developer Hub instance
+
+Now that we have everything configured, let's open up the Red Hat Developer Hub instance and build our application.
 
 From the Administrator view, click on `Networking`, and then `Routes`.
 
 Click on the `backstage-developer-hub` route URL.
 
-![backstarge-route](images/backstage-route.png)
+![backstage-route](images/backstage-route.png)
 
 Sign into `Red Hat Developer Hub` backstage OIDC page by clicking `Sign In`. 
 
@@ -444,7 +462,7 @@ https://github.com/OpenLiberty/liberty-backstage-demo/blob/main/liberty-template
 
 Click `Analyze`.
 
-Once complete, click `Import` to start the process of adding the components to the Backstage catalog.
+Once complete, click `Import` to start the process of adding the components to the Red Hat Developer Hub catalog.
 
 Click `Create...` again to see the newly added template.
 
