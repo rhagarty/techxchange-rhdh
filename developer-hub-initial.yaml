@@ -2,6 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: dynamic-plugins-root
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,6 +16,7 @@ apiVersion: rhdh.redhat.com/v1alpha2
 kind: Backstage
 metadata:
   name: developer-hub
+  namespace: default
 spec:
   deployment:
     patch:
