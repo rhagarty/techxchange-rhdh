@@ -73,12 +73,14 @@ For convenience, we will be using the `default` project/namespace for this lab. 
 To enable use of Red Hat Developer Hub in our Openshift cluster, we need to create a Developer Hub instance.
 
 Click the `Import YAML` button located at the top of the console.
-Copy and paste the contents of the file `developer-hub-initial.yaml` into the YAML editor.
+
+![apply-yaml](images/apply-yaml.png)
+
+Copy and paste the contents of the file [developer-hub-initial.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/developer-hub-initial.yaml) into the YAML editor.
 
 >**NOTE**: Use `CTRL-v` to paste.
 
 Click `Create` to create the developer hub instance and acommpanied persistent volume.
-
 
 >**NOTE**: Backstage is an open-source framework for building developer portals, and it serves as the foundation that Red Hat Developer Hub is built on.
 
