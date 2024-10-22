@@ -74,16 +74,24 @@ To enable use of Red Hat Developer Hub in our Openshift cluster, we need to crea
 
 Click the `Import YAML` button located at the top of the console.
 
-![apply-yaml](images/apply-yaml.png)
+From the Developer view:
+- Go to `+Add` and select `Operator Backed` from the `Developer Catalog` section.
 
-Copy and paste the contents of the file [developer-hub-initial.yaml](https://github.com/rhagarty/techxchange-rhdh/blob/main/developer-hub-initial.yaml) into the YAML editor.
+![operator-backed](images/operator-backed.png)
 
->**NOTE**: Use `CTRL-v` to paste.
+From the list of options, select `Red Hat Developer Hub`.
 
-Click `Create` to create the developer hub instance and acommpanied persistent volume.
+![rhdh-create-button](images/rhdh-create-button.png)
+
+- Click the `Create` button.
+- This will bring up the `Create Backstage` panel.
 
 >**NOTE**: Backstage is an open-source framework for building developer portals, and it serves as the foundation that Red Hat Developer Hub is built on.
 
+![rhdh-create-panel](images/rhdh-create-panel.png)
+
+- For now, leave all the fields with their default values and click `Create`.
+  
   Please be patient, as this may take several minutes to complete.
 
 - Once instantiated, you will be able to view the instance by clicking the `Topology` view.
