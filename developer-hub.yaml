@@ -1,14 +1,4 @@
 spec:
-  deployment:
-    patch:
-      spec:
-        template:
-          spec:
-            volumes:
-              - $patch: replace
-                name: dynamic-plugins-root
-                persistentVolumeClaim:
-                  claimName: dynamic-plugins-root
   application:
     appConfig:
       configMaps:
